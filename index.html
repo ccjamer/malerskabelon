@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MalerMesteren - Få et tilbud på 1 minut</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.6; }
+    .chat-box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; background: #f9f9f9; }
+    input, button { padding: 10px; margin-top: 10px; width: 100%; box-sizing: border-box; }
+    button { background: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
+    #response { margin-top: 15px; font-weight: bold; color: #28a745; }
+  </style>
+</head>
+<body>
+
+  <h1>MalerMesteren A/S</h1>
+  <p>Skriv til vores digitale medarbejder herunder og få beregnet et hurtigt malertilbud!</p>
+
+  <div class="chat-box">
+    <label for="userMsg">Hvad skal du have malet? (f.eks. 3-værelses lejlighed)</label>
+    <input type="text" id="userMsg" placeholder="Skriv din besked her...">
+    <button onclick="sendToN8n()">Send til DMA</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    async function sendToN8n() {
+      const input = document.getElementById('userMsg').value;
+      const responseDiv = document.getElementById('response');
+      responseDiv.innerText = "DMA tænker...";
+
+      // ERSTAT MED DIN N8N WEBHOOK URL HERUNDER:
+      const n8nWebhookUrl = 'https://n8n.dindomæne.dk/webhook/maler-test';
+
+      try {
+        const res = await fetch(n8nWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: input })
+        });
+        const data = await res.json();
+        responseDiv.innerText = data.reply || "Svar modtaget fra n8n!";
+      } catch (err) {
+        responseDiv.innerText = "Fejl: Kunne ikke forbinde til n8n.";
+      }
+    }
+  </script>
+
+</body>
+</html>
